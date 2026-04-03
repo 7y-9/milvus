@@ -1,0 +1,36 @@
+internal/coordinator/mix_coord.go
+  37961db79093d3b0 105,157-160,172-175,360-362,890-928,947-963
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "25ceb7f505d839f1e13707e94f2d729e6e015f4e",
+  "prompts": {
+    "37961db79093d3b0": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4703bb1d-b2cd-413c-b143-d00de5bf8800",
+        "model": "claude-4.6-sonnet-medium-thinking"
+      },
+      "human_author": "lianyu.sun <lianyu.sun@ly.com>",
+      "messages": [],
+      "total_additions": 76,
+      "total_deletions": 3,
+      "accepted_lines": 68,
+      "overriden_lines": 0
+    },
+    "d5f1b5f7dfb84d69": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d52ad-ad55-7651-81b5-df7e33252a16",
+        "model": "unknown"
+      },
+      "human_author": "lianyu.sun <lianyu.sun@ly.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}
