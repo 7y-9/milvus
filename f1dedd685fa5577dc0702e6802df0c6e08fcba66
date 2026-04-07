@@ -1,0 +1,21 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "f1dedd685fa5577dc0702e6802df0c6e08fcba66",
+  "prompts": {
+    "d5f1b5f7dfb84d69": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d52ad-ad55-7651-81b5-df7e33252a16",
+        "model": "unknown"
+      },
+      "human_author": "lianyu.sun <lianyu.sun@ly.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}
