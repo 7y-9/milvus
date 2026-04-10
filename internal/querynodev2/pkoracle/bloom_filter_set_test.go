@@ -188,3 +188,33 @@ func TestMemSize(t *testing.T) {
 		assert.Greater(t, size, int64(0))
 	})
 }
+
+func TestPkCandidateExist(t *testing.T) {
+	paramtable.Init()
+
+	t.Run("empty candidate should be false even with empty history slice", func(t *testing.T) {
+		bfs := NewBloomFilterSet(1, 1, commonpb.SegmentState_Sealed)
+		bfs.historyStats = make([]*storage.PkStatistics, 0)
+		assert.False(t, bfs.PkCandidateExist())
+	})
+
+	t.Run("candidate with current stat should be true", func(t *testing.T) {
+		bfs := NewBloomFilterSet(1, 1, commonpb.SegmentState_Sealed)
+		bfs.UpdatePkCandidate([]storage.PrimaryKey{storage.NewInt64PrimaryKey(1)})
+		assert.True(t, bfs.PkCandidateExist())
+	})
+
+	t.Run("candidate with nil-only history should be false", func(t *testing.T) {
+		bfs := NewBloomFilterSet(1, 1, commonpb.SegmentState_Sealed)
+		bfs.AddHistoricalStats(nil)
+		assert.False(t, bfs.PkCandidateExist())
+	})
+
+	t.Run("candidate with historical stat should be true", func(t *testing.T) {
+		bfs := NewBloomFilterSet(1, 1, commonpb.SegmentState_Sealed)
+		other := NewBloomFilterSet(2, 1, commonpb.SegmentState_Sealed)
+		other.UpdatePkCandidate([]storage.PrimaryKey{storage.NewInt64PrimaryKey(10)})
+		bfs.AddHistoricalStats(other.Stats())
+		assert.True(t, bfs.PkCandidateExist())
+	})
+}
