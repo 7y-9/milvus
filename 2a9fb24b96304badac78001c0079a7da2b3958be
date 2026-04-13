@@ -1,0 +1,44 @@
+internal/distributed/streamingnode/service.go
+  d6464551a19ec962 49,255
+internal/util/sessionutil/session_util.go
+  d6464551a19ec962 76-83
+tests/integration/cluster/process/milvus_process.go
+  d6464551a19ec962 411-421
+internal/querynodev2/server.go
+  d6464551a19ec962 186-190
+internal/util/sessionutil/session_util_test.go
+  d6464551a19ec962 936-964
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "2a9fb24b96304badac78001c0079a7da2b3958be",
+  "prompts": {
+    "7b187df31744ee69": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d68ef-73d6-7cd0-a880-80f7e38247b7",
+        "model": "gpt-5.4"
+      },
+      "human_author": "lianyu.sun <lianyu.sun@ly.com>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 1,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "d6464551a19ec962": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c75ddf3d-1418-431a-aa69-372ca8a58fa1",
+        "model": "claude-4.6-sonnet-medium-thinking"
+      },
+      "human_author": "lianyu.sun <lianyu.sun@ly.com>",
+      "messages": [],
+      "total_additions": 228,
+      "total_deletions": 2,
+      "accepted_lines": 228,
+      "overriden_lines": 0
+    }
+  }
+}
