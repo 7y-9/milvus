@@ -27,6 +27,7 @@ import (
 
 func (c *DDLCallbacks) batchUpdateManifestV2AckCallback(ctx context.Context, result message.BroadcastResultBatchUpdateManifestMessageV2) error {
 	body := result.Message.MustBody()
+	header := result.Message.MustHeader()
 	var (
 		operators []UpdateOperator
 		v2Count   int
@@ -46,7 +47,7 @@ func (c *DDLCallbacks) batchUpdateManifestV2AckCallback(ctx context.Context, res
 			operators = append(operators, UpdateSegmentColumnGroupsOperator(segID, cg.GetColumnGroups()))
 			v2Count++
 		case hasV3:
-			operators = append(operators, UpdateManifestVersion(segID, item.GetManifestVersion()))
+			operators = append(operators, UpdateManifestVersionWithCollection(segID, item.GetManifestVersion(), header.GetCollectionId()))
 			v3Count++
 		default:
 			log.Ctx(ctx).Warn("batch update manifest item has no payload; skipping",
