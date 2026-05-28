@@ -577,8 +577,12 @@ class ConcurrentVector<Json> : public ConcurrentVectorImpl<Json, true> {
     view_element(ssize_t element_index) const {
         auto chunk_id = element_index / size_per_chunk_;
         auto chunk_offset = element_index % size_per_chunk_;
-        return std::string_view(
-            chunks_ptr_->view_element(chunk_id, chunk_offset).data());
+        auto json = chunks_ptr_->view_element(chunk_id, chunk_offset);
+        auto json_view = json.data();
+        if (json_view.data() == nullptr) {
+            return {};
+        }
+        return std::string_view(json_view.data(), json_view.size());
     }
 };
 
