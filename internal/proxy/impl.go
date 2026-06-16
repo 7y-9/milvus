@@ -7443,6 +7443,8 @@ func (node *Proxy) DumpMessages(req *milvuspb.DumpMessagesRequest, stream milvus
 	ctx, sp := otel.Tracer(typeutil.ProxyRole).Start(ctx, "Proxy-DumpMessages")
 	defer sp.End()
 
+	var err error
+
 	if err := merr.CheckHealthy(node.GetStateCode()); err != nil {
 		return err
 	}
@@ -7462,7 +7464,17 @@ func (node *Proxy) DumpMessages(req *milvuspb.DumpMessagesRequest, stream milvus
 		return merr.WrapErrParameterMissing("start_message_id")
 	}
 
-	startMsgID := message.MustUnmarshalMessageID(req.GetStartMessageId())
+	if ctx, err = AuthenticationInterceptor(ctx); err != nil {
+		return err
+	}
+	if ctx, err = PrivilegeInterceptor(ctx, req); err != nil {
+		return err
+	}
+
+	startMsgID, err := message.UnmarshalMessageID(req.GetStartMessageId())
+	if err != nil {
+		return merr.WrapErrParameterInvalidMsg("invalid start_message_id")
+	}
 
 	// Use exclusive start position (dump messages AFTER start_message_id)
 	// This is appropriate for salvage scenarios where start_message_id is the last synced message
