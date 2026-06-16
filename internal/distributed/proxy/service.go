@@ -90,6 +90,8 @@ var (
 
 const apiPathPrefix = "/api/v1"
 
+const h2cUpgradeRequestBodyMaxBytes = 1 << 20
+
 // Server is the Proxy Server
 type Server struct {
 	grpc_health_v1.UnimplementedHealthServer
@@ -227,7 +229,8 @@ func (s *Server) startHTTPServer(errChan chan error) {
 	appV2 := ginHandler.Group("/v2/vectordb")
 	httpserver.NewHandlersV2(s.proxy).RegisterRoutesToV2(appV2)
 	http2Server := &http2.Server{}
-	s.httpServer = &http.Server{Handler: h2c.NewHandler(s.httpHandler(ginHandler), http2Server), ReadHeaderTimeout: time.Second}
+	handler := http.MaxBytesHandler(s.httpHandler(ginHandler), h2cUpgradeRequestBodyMaxBytes)
+	s.httpServer = &http.Server{Handler: h2c.NewHandler(handler, http2Server), ReadHeaderTimeout: time.Second}
 	if err := http2.ConfigureServer(s.httpServer, http2Server); err != nil {
 		errChan <- err
 		return
