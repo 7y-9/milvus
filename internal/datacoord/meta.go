@@ -1601,6 +1601,10 @@ func UpdateManifest(segmentID int64, manifestPath string) UpdateOperator {
 }
 
 func UpdateManifestVersion(segmentID int64, manifestVersion int64) UpdateOperator {
+	return UpdateManifestVersionWithCollection(segmentID, manifestVersion, 0)
+}
+
+func UpdateManifestVersionWithCollection(segmentID int64, manifestVersion int64, collectionID int64) UpdateOperator {
 	return func(modPack *updateSegmentPack) bool {
 		segment := modPack.Get(segmentID)
 		if segment == nil {
@@ -1611,6 +1615,13 @@ func UpdateManifestVersion(segmentID int64, manifestVersion int64) UpdateOperato
 		if segment.ManifestPath == "" {
 			mlog.Warn(context.TODO(), "meta update: update manifest version failed - no manifest path",
 				mlog.Int64("segmentID", segmentID))
+			return false
+		}
+		if collectionID > 0 && segment.GetCollectionID() != collectionID {
+			log.Ctx(context.TODO()).Warn("meta update: update manifest version failed - collection mismatch",
+				zap.Int64("segmentID", segmentID),
+				zap.Int64("segmentCollectionID", segment.GetCollectionID()),
+				zap.Int64("expectedCollectionID", collectionID))
 			return false
 		}
 		basePath, currentVer, err := packed.UnmarshalManifestPath(segment.ManifestPath)

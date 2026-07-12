@@ -4288,6 +4288,33 @@ func TestUpdateManifestVersion(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, int64(10), currentVer)
 	})
+
+	t.Run("collection mismatch rejected", func(t *testing.T) {
+		meta, err := newMemoryMeta(t)
+		assert.NoError(t, err)
+
+		manifestPath := packed.MarshalManifestPath("/data/segments/1", 1)
+		meta.AddSegment(context.Background(), &SegmentInfo{
+			SegmentInfo: &datapb.SegmentInfo{
+				ID:           1,
+				CollectionID: 100,
+				State:        commonpb.SegmentState_Flushed,
+				ManifestPath: manifestPath,
+			},
+		})
+
+		operator := UpdateManifestVersionWithCollection(1, 5, 200)
+		pack := &updateSegmentPack{
+			meta:     meta,
+			segments: make(map[int64]*SegmentInfo),
+		}
+		assert.False(t, operator(pack))
+
+		seg := pack.Get(1)
+		_, version, err := packed.UnmarshalManifestPath(seg.ManifestPath)
+		assert.NoError(t, err)
+		assert.Equal(t, int64(1), version)
+	})
 }
 
 func TestUpdateSegmentColumnGroupsOperator(t *testing.T) {
