@@ -1324,6 +1324,14 @@ func (s *mixCoordImpl) HandleAlterConfig(writer http.ResponseWriter, request *ht
 			return
 		}
 
+		// Block security-sensitive configurations from unauthenticated management endpoint.
+		if strings.HasPrefix(normalizedKey, "common.security.") {
+			logger.Info("HandleAlterConfig attempted to modify security config",
+				zap.String("key", config.Key))
+			writeJSONError(writer, fmt.Sprintf("security configuration cannot be modified through this endpoint. Invalid key: %s", config.Key), http.StatusBadRequest)
+			return
+		}
+
 		// Check if the configuration is immutable - immutable keys cannot be modified
 		if paramMgr.IsImmutable(config.Key) {
 			logger.Info(request.Context(), "HandleAlterConfig attempted to modify immutable config",

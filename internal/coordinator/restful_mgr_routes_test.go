@@ -262,6 +262,22 @@ func TestHandleAlterConfig(t *testing.T) {
 		assert.Contains(t, w.Body.String(), "alterWAL endpoint")
 	})
 
+	t.Run("security config should fail", func(t *testing.T) {
+		reqBody := map[string]interface{}{
+			"configs": []map[string]interface{}{
+				{"key": "common.security.authorizationEnabled", "value": "false"},
+			},
+		}
+		body, _ := json.Marshal(reqBody)
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/config/alter", bytes.NewReader(body))
+		w := httptest.NewRecorder()
+
+		coord.HandleAlterConfig(w, req)
+
+		assert.Equal(t, http.StatusBadRequest, w.Code)
+		assert.Contains(t, w.Body.String(), "security configuration cannot be modified")
+	})
+
 	t.Run("immutable config should fail", func(t *testing.T) {
 		reqBody := map[string]interface{}{
 			"configs": []map[string]interface{}{
